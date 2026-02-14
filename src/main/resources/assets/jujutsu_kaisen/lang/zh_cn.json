@@ -526,7 +526,7 @@
   "cursed_energy_nature.jujutsu_kaisen.divergent": "延迟",
 
   "trait.jujutsu_kaisen.six_eyes": "六眼",
-  "trait.jujutsu_kaisen.heavenly_restriction": "天与咒缚",
+  "trait.jujutsu_kaisen.heavenly_restriction_physical": "天与咒缚",
   "trait.jujutsu_kaisen.vessel": "容器",
   "trait.jujutsu_kaisen.perfect_body": "完美身体",
   "trait.jujutsu_kaisen.rct_output": "反转术式输出",
@@ -564,7 +564,7 @@
   
   "chat.jujutsu_kaisen.trait.perfect_body": "你拥有一具完美的身体",
   "chat.jujutsu_kaisen.trait.incarnated": "你作为术士受肉到某人身上",
-  "chat.jujutsu_kaisen.trait.heavenly_restriction": "你天赋异禀的身体没有任何一丝咒力",
+  "chat.jujutsu_kaisen.trait.heavenly_restriction_physical": "你天赋异禀的身体没有任何一丝咒力",
   "chat.jujutsu_kaisen.trait.rct_output": "你能通过独特的方式输出你的咒力",
   "chat.jujutsu_kaisen.trait.vessel": "你有着成为某人容器的独特潜力",
   "chat.jujutsu_kaisen.trait.six_eyes": "你拥有六眼，这使得世界的平衡发生了变化",
@@ -768,8 +768,8 @@
   "advancements.jujutsu_kaisen.black_flash.title": "黑闪",
   "advancements.jujutsu_kaisen.black_flash.description": "黑闪的火花不会选择祝福何人。",
 
-  "advancements.jujutsu_kaisen.heavenly_restriction.title": "天与咒缚",
-  "advancements.jujutsu_kaisen.heavenly_restriction.description": "你以咒力为代价，换来了无与伦比的肉体能力。",
+  "advancements.jujutsu_kaisen.heavenly_restriction_physical.title": "天与咒缚",
+  "advancements.jujutsu_kaisen.heavenly_restriction_physical.description": "你以咒力为代价，换来了无与伦比的肉体能力。",
 
   "advancements.jujutsu_kaisen.vessel.title": "容器",
   "advancements.jujutsu_kaisen.vessel.description": "你的身体似乎天生就是为了容纳他人的灵魂。",

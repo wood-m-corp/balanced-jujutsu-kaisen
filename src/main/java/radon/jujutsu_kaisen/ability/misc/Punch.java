@@ -7,16 +7,13 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.RiderShieldingMount;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import radon.jujutsu_kaisen.JujutsuKaisen;
@@ -24,15 +21,12 @@ import radon.jujutsu_kaisen.ability.JJKAbilities;
 import radon.jujutsu_kaisen.ability.MenuType;
 import radon.jujutsu_kaisen.ability.base.Ability;
 import radon.jujutsu_kaisen.capability.data.sorcerer.ISorcererData;
-import radon.jujutsu_kaisen.capability.data.sorcerer.Pact;
 import radon.jujutsu_kaisen.capability.data.sorcerer.SorcererDataHandler;
 import radon.jujutsu_kaisen.capability.data.sorcerer.Trait;
 import radon.jujutsu_kaisen.client.ClientWrapper;
 import radon.jujutsu_kaisen.damage.JJKDamageSources;
 import radon.jujutsu_kaisen.effect.JJKEffects;
 import radon.jujutsu_kaisen.entity.base.ISorcerer;
-import radon.jujutsu_kaisen.item.cursed_tool.HitenStaffItem;
-import radon.jujutsu_kaisen.item.cursed_tool.PlayfulCloudItem;
 import radon.jujutsu_kaisen.item.cursed_tool.PolearmStaffItem;
 import radon.jujutsu_kaisen.item.cursed_tool.SteelGauntletItem;
 import radon.jujutsu_kaisen.item.cursed_tool.SlaughterDemonItem;
@@ -174,7 +168,7 @@ public class Punch extends Ability implements Ability.ICharged{
                         int tim = 8;
 
                         if (power == 1) {
-                            if (!cap.hasToggled(JJKAbilities.RATIO_RULE.get()) && (!JJKAbilities.hasTrait(owner, Trait.HEAVENLY_RESTRICTION))) {
+                            if (!cap.hasToggled(JJKAbilities.RATIO_RULE.get()) && (!JJKAbilities.hasTrait(owner, Trait.HEAVENLY_RESTRICTION_PHYSICAL))) {
                                 cap.moreBlackFlash(true);
                             }
 
@@ -220,16 +214,22 @@ public class Punch extends Ability implements Ability.ICharged{
                     float newPower = (float) (LAUNCH_POWER*(0.8+0.4*power));
                     newDMG *= (float) (1+0.75 *power);
                     
-                    if (JJKAbilities.hasTrait(owner, Trait.HEAVENLY_RESTRICTION)) {
+                    if (JJKAbilities.hasTrait(owner, Trait.HEAVENLY_RESTRICTION_PHYSICAL)) {
                         if (entity.hurt(owner instanceof Player player ? owner.damageSources().playerAttack(player) : owner.damageSources().mobAttack(owner), (newDMG * 1.25F) * this.getPower(owner))) {
                             entity.setDeltaMovement(look.scale(newPower * (1.0F + this.getPower(owner) * 0.1F) * 1.5F)
                                     .multiply(1.0D, 0.25D, 1.0D));
                             entity.addEffect(new MobEffectInstance(JJKEffects.STUN.get(), tim, 0, false, false, false));
                             entity.addEffect(new MobEffectInstance(JJKEffects.STAGGER.get(), finalStagger, 0, false, false, false));
                         }
-                    }
-
-                    else {
+                    } else if (JJKAbilities.hasTrait(owner, Trait.HEAVENLY_RESTRICTION_CE))
+                        {
+                        if (entity.hurt(owner instanceof Player player ? owner.damageSources().playerAttack(player) : owner.damageSources().mobAttack(owner), (newDMG * 0.5F) * this.getPower(owner))) {
+                            entity.setDeltaMovement(look.scale(newPower * (1.0F + this.getPower(owner) * 0.1F) * 0.5F)
+                                    .multiply(0.8D, 0.25D, 0.8D));
+                            //entity.addEffect(new MobEffectInstance(JJKEffects.STUN.get(), tim, 0, false, false, false));
+                            //entity.addEffect(new MobEffectInstance(JJKEffects.STAGGER.get(), finalStagger, 0, false, false, false));
+                        }
+                        } else {
                         if (entity.hurt(JJKDamageSources.jujutsuAttack(owner, this), (newDMG) * this.getPower(owner))) {
                             if (owner instanceof Player player) {
                                 entity.setDeltaMovement(look.scale(newPower * (1.0F + this.getPower(owner) * 0.1F))
@@ -241,8 +241,7 @@ public class Punch extends Ability implements Ability.ICharged{
                             }
                             entity.addEffect(new MobEffectInstance(JJKEffects.STUN.get(), tim, 0, false, false, false));
                             entity.addEffect(new MobEffectInstance(JJKEffects.STAGGER.get(), finalStagger, 0, false, false, false));
-
-                    }
+                        }
                     }
 
                     }
@@ -296,7 +295,7 @@ public class Punch extends Ability implements Ability.ICharged{
 
     @Override
     public float getCost(LivingEntity owner) {
-        return JJKAbilities.hasTrait(owner, Trait.HEAVENLY_RESTRICTION) ? 0.0F : 20.0F;
+        return JJKAbilities.hasTrait(owner, Trait.HEAVENLY_RESTRICTION_PHYSICAL) ? 0.0F : 20.0F;
     }
 
     @Override

@@ -526,7 +526,7 @@
   "cursed_energy_nature.jujutsu_kaisen.divergent": "Divergente",
 
   "trait.jujutsu_kaisen.six_eyes": "Seis Olhos",
-  "trait.jujutsu_kaisen.heavenly_restriction": "Restrição Divina",
+  "trait.jujutsu_kaisen.heavenly_restriction_physical": "Restrição Divina",
   "trait.jujutsu_kaisen.vessel": "Receptáculo",
   "trait.jujutsu_kaisen.perfect_body": "Corpo Perfeito",
   "trait.jujutsu_kaisen.rct_output": "Reversão Avançada",
@@ -564,7 +564,7 @@
 
   "chat.jujutsu_kaisen.trait.perfect_body": "Você alcançou o Corpo Perfeito.",
   "chat.jujutsu_kaisen.trait.incarnated": "Você foi Incarnado como um Feiticeiro.",
-  "chat.jujutsu_kaisen.trait.heavenly_restriction": "Seu corpo fisicamente divino não possuí Energia Amaldiçoada.",
+  "chat.jujutsu_kaisen.trait.heavenly_restriction_physical": "Seu corpo fisicamente divino não possuí Energia Amaldiçoada.",
   "chat.jujutsu_kaisen.trait.rct_output": "Você tem uma potência única para sua Energia Amaldiçoada.",
   "chat.jujutsu_kaisen.trait.vessel": "Você nasceu com o potencial de um Receptáculo.",
   "chat.jujutsu_kaisen.trait.six_eyes": "Você nasceu com os Seis Olhos. O equilíbrio do mundo se alterou.",
@@ -768,8 +768,8 @@
   "advancements.jujutsu_kaisen.black_flash.title": "Fulgor Negro",
   "advancements.jujutsu_kaisen.black_flash.description": "As Faíscas Negras não escolhem aqueles que são abençoados.",
 
-  "advancements.jujutsu_kaisen.heavenly_restriction.title": "Restrição Celestial",
-  "advancements.jujutsu_kaisen.heavenly_restriction.description": "Você foi garantido(a) habilidades físicas imparáveis em troca de sua Energia Amaldiçoada.",
+  "advancements.jujutsu_kaisen.heavenly_restriction_physical.title": "Restrição Celestial",
+  "advancements.jujutsu_kaisen.heavenly_restriction_physical.description": "Você foi garantido(a) habilidades físicas imparáveis em troca de sua Energia Amaldiçoada.",
 
   "advancements.jujutsu_kaisen.vessel.title": "Receptáculo",
   "advancements.jujutsu_kaisen.vessel.description": "Seu corpo parece ter sido feito para conter as almas de outros.",

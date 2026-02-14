@@ -147,8 +147,10 @@ public class ThrownChainProjectile extends AbstractArrow {
             //float speed = this.getDeltaMovement().lengthSqr();
             ISorcererData cap = owner.getCapability(SorcererDataHandler.INSTANCE).resolve().orElseThrow();
             float DAMAGE = 8.5F*cap.getRealPower();
-            if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION)) {
+            if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION_PHYSICAL)) {
                 DAMAGE*=1.3;
+            } else if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION_CE)) {
+                DAMAGE*=0.8;
             }
 
             SwordItem sword = (SwordItem) this.getStack().getItem();
@@ -182,10 +184,12 @@ public class ThrownChainProjectile extends AbstractArrow {
             return;
         }
         ISorcererData cap = owner.getCapability(SorcererDataHandler.INSTANCE).resolve().orElseThrow();
-        if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION)) {
+        if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION_PHYSICAL)) {
             speedMult = 10.0F;
+        } else if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION_CE)) {
+            speedMult = 2.5F;
         }
-        
+
 
         if (!this.level().isClientSide && (owner == null || owner.isRemoved() || !owner.isAlive() || this.inGroundTime > DURATION)) {
             this.discard();

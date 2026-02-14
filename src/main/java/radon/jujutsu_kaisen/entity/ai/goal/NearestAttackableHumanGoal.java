@@ -62,7 +62,7 @@ public class NearestAttackableHumanGoal extends TargetGoal {
             if (!(entity instanceof TamableAnimal tamable && entity instanceof ISorcerer && tamable.isTame())) {
                 if (!entity.getCapability(SorcererDataHandler.INSTANCE).isPresent()) return false;
                 ISorcererData cap = entity.getCapability(SorcererDataHandler.INSTANCE).resolve().orElseThrow();
-                return cap.hasTrait(Trait.HEAVENLY_RESTRICTION);
+                return cap.hasTrait(Trait.HEAVENLY_RESTRICTION_PHYSICAL);
             }
             return false;
         }), this.targetConditions, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());

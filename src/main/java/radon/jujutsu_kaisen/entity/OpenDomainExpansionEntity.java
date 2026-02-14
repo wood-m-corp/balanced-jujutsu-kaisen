@@ -10,7 +10,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -106,7 +105,7 @@ public abstract class OpenDomainExpansionEntity extends DomainExpansionEntity {
 
     protected void doSureHitEffect(@NotNull LivingEntity owner) {
         for (LivingEntity entity : this.getAffected()) {
-            if (JJKAbilities.hasTrait(entity, Trait.HEAVENLY_RESTRICTION)) {
+            if (JJKAbilities.hasTrait(entity, Trait.HEAVENLY_RESTRICTION_PHYSICAL)) {
                 this.ability.onHitBlock(this, owner, entity.blockPosition());
             } else {
                 this.ability.onHitEntity(this, owner, entity, false);

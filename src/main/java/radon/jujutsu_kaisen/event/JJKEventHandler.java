@@ -1,6 +1,5 @@
 package radon.jujutsu_kaisen.event;
 
-import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleTypes;
@@ -9,7 +8,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.damagesource.CombatRules;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -32,7 +30,6 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.level.ExplosionEvent;
 import net.minecraftforge.event.level.SleepFinishedTimeEvent;
-import net.minecraftforge.event.level.NoteBlockEvent.Play;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -40,11 +37,8 @@ import radon.jujutsu_kaisen.JujutsuKaisen;
 import radon.jujutsu_kaisen.VeilHandler;
 import radon.jujutsu_kaisen.ability.*;
 import radon.jujutsu_kaisen.ability.base.Ability;
-import radon.jujutsu_kaisen.ability.base.Summon;
-import radon.jujutsu_kaisen.ability.misc.Slam;
 import radon.jujutsu_kaisen.block.VeilBlock;
 import radon.jujutsu_kaisen.block.VeilRodBlock;
-import radon.jujutsu_kaisen.block.entity.VeilRodBlockEntity;
 import radon.jujutsu_kaisen.capability.data.sorcerer.ISorcererData;
 import radon.jujutsu_kaisen.capability.data.sorcerer.SorcererDataHandler;
 import radon.jujutsu_kaisen.capability.data.sorcerer.CursedTechnique;
@@ -68,7 +62,6 @@ import radon.jujutsu_kaisen.network.PacketHandler;
 import radon.jujutsu_kaisen.network.packet.s2c.SyncSorcererDataS2CPacket;
 import radon.jujutsu_kaisen.util.*;
 import virtuoel.pehkui.api.ScaleData;
-import virtuoel.pehkui.api.ScaleType;
 import virtuoel.pehkui.api.ScaleTypes;
 
 import java.util.ArrayList;
@@ -164,8 +157,9 @@ public class JJKEventHandler {
                     if (!player.getCapability(SorcererDataHandler.INSTANCE).isPresent()) continue;
 
                     ISorcererData cap = player.getCapability(SorcererDataHandler.INSTANCE).resolve().orElseThrow();
-                    cap.setEnergy(cap.getMaxEnergy());
-
+                    if (!cap.hasTrait(Trait.HEAVENLY_RESTRICTION_CE)){
+                        cap.setEnergy(cap.getMaxEnergy());
+                    }
                     PacketHandler.sendToClient(new SyncSorcererDataS2CPacket(cap.serializeNBT()), player);
                 }
             }
@@ -205,7 +199,11 @@ public class JJKEventHandler {
             newCap.deserializeNBT(oldCap.serializeNBT());
 
             if (event.isWasDeath()) {
-                newCap.setEnergy(newCap.getMaxEnergy());
+                if (oldCap.hasTrait(Trait.HEAVENLY_RESTRICTION_CE)){
+                    newCap.setEnergy(oldCap.getEnergy());
+                }else{
+                    newCap.setEnergy(newCap.getMaxEnergy());
+                }
                 newCap.resetCooldowns();
                 newCap.resetBurnout();
                 newCap.resetDisable();
@@ -262,7 +260,7 @@ public class JJKEventHandler {
 
             cap.tick(owner);
 
-            if ((cap.hasTrait(Trait.SIX_EYES) && (!owner.getItemBySlot(EquipmentSlot.HEAD).is(JJKItems.BLINDFOLD.get()) && !CuriosUtil.findSlot(owner, "head").is(JJKItems.BLINDFOLD.get()) ) ) || cap.hasTrait(Trait.HEAVENLY_RESTRICTION)) {
+            if ((cap.hasTrait(Trait.SIX_EYES) && (!owner.getItemBySlot(EquipmentSlot.HEAD).is(JJKItems.BLINDFOLD.get()) && !CuriosUtil.findSlot(owner, "head").is(JJKItems.BLINDFOLD.get()) ) ) || cap.hasTrait(Trait.HEAVENLY_RESTRICTION_PHYSICAL)) {
                 owner.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 220, 0, false, false, false));
             }
 
@@ -287,6 +285,18 @@ public class JJKEventHandler {
                         baseScale.markForSync(true);
                     //}
             }
+            else if((cap.hasTrait(Trait.HEAVENLY_RESTRICTION_CE) )) {
+                if (owner instanceof Player) {
+                    if (cap != null) {
+                        float targetScale = 1.0F;
+                        float targetWidth = 0.9F;
+                        ScaleData baseScale = ScaleTypes.BASE.getScaleData(owner);
+                        ScaleData baseWidth = ScaleTypes.WIDTH.getScaleData(owner);
+                        baseScale.setScale(targetScale);
+                        baseWidth.setScale(targetWidth);
+                    }
+                }
+            }
             else if((cap.hasTrait(Trait.CURSED_WOMB) )) {
                 if (owner instanceof Player) {
                 if (cap != null) {
@@ -300,7 +310,7 @@ public class JJKEventHandler {
                 ScaleData baseWidth = ScaleTypes.WIDTH.getScaleData(owner);
                 // float currentScale = baseScale.getScale();
                 // float currentWidth = baseWidth.getScale();
-                baseScale.setScale(targetScale); 
+                baseScale.setScale(targetScale);
                 baseWidth.setScale(targetWidth);
 
                 }
@@ -317,12 +327,12 @@ public class JJKEventHandler {
             }
             
 
-            if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION)) {
+            if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION_PHYSICAL)) {
                 owner.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 2, 1, false, false, false));
             }
-
-            owner.addEffect(new MobEffectInstance(MobEffects.JUMP, 2, 2, false, false, false));
-
+            if (!cap.hasTrait(Trait.HEAVENLY_RESTRICTION_CE)) {
+                owner.addEffect(new MobEffectInstance(MobEffects.JUMP, 2, 2, false, false, false));
+            }
             if (owner instanceof Player player) {
                 if ( (cap.getType() == JujutsuType.SORCERER && ConfigHolder.SERVER.sorcererSaturation.get()) || (cap.getType() == JujutsuType.CURSE && ConfigHolder.SERVER.curseSaturation.get()) ) {
                     player.getFoodData().setFoodLevel(20);
@@ -341,8 +351,10 @@ public class JJKEventHandler {
             LivingEntity victim = event.getEntity();
 
             event.getEntity().getCapability(SorcererDataHandler.INSTANCE).ifPresent(cap -> {
-                if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION)) {
+                if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION_PHYSICAL)) {
                     event.setDistance(event.getDistance() * 0.1F);
+                } else if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION_CE)) {
+                    event.setDistance(event.getDistance() * 1.5F);
                 } else {
                     event.setDistance(event.getDistance() * 0.33F);
                 }
@@ -475,7 +487,7 @@ if (JJKAbilities.hasTrait(attacker, Trait.PERFECT_BODY)) {
             if (victim instanceof Player) {
                 armor*=ConfigHolder.SERVER.jujutsuDefenseMult.get().floatValue();
             }
-            if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION)) {
+            if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION_PHYSICAL)) {
 		        armor = SorcererUtil.getDefenseHR(cap.getExperience());
                 if (victim instanceof Player) {
                    armor*=ConfigHolder.SERVER.hrDefenseMult.get().floatValue();

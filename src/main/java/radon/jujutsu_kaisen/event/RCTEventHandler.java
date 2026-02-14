@@ -44,9 +44,9 @@ public class RCTEventHandler {
             if (!victim.getCapability(SorcererDataHandler.INSTANCE).isPresent()) return;
             ISorcererData cap = victim.getCapability(SorcererDataHandler.INSTANCE).resolve().orElseThrow();
 
-            if ((cap.isUnlocked(JJKAbilities.RCT1.get()) && cap.getType() == JujutsuType.SORCERER) || (cap.hasTrait(Trait.CURSED_WOMB) && cap.checkWombAwakened() == true  ) ) return;
+            if ((cap.isUnlocked(JJKAbilities.RCT1.get()) && cap.getType() == JujutsuType.SORCERER) || (cap.hasTrait(Trait.CURSED_WOMB) && cap.checkWombAwakened()) ) return;
             if (victim instanceof TamableAnimal tamable && tamable.isTame()) return;
-            if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION)) return;
+            if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION_PHYSICAL)) return;
             if (cap.getType() != JujutsuType.SORCERER && !cap.hasTrait(Trait.CURSED_WOMB) ) return;
             if (SorcererUtil.getGrade(cap.getExperience()).ordinal() < SorcererGrade.SEMI_GRADE_2.ordinal()) return;
 

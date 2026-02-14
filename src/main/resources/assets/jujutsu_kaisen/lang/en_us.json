@@ -19,6 +19,7 @@
 
 
   "gui.jujutsu_kaisen.six_eyes_overlay.cursed_technique": "Cursed Technique: %1$s",
+  "gui.jujutsu_kaisen.six_eyes_overlay.heavenly_restriction_ce": "Overflowing CE",
   "gui.jujutsu_kaisen.six_eyes_overlay.grade": "Grade: %1$s",
 
   "gui.jujutsu_kaisen.stats": "Stats",
@@ -526,7 +527,8 @@
   "cursed_energy_nature.jujutsu_kaisen.divergent": "Divergent",
 
   "trait.jujutsu_kaisen.six_eyes": "Six Eyes",
-  "trait.jujutsu_kaisen.heavenly_restriction": "Heavenly Restriction",
+  "trait.jujutsu_kaisen.heavenly_restriction_physical": "Physical Heavenly Restriction",
+  "trait.jujutsu_kaisen.heavenly_restriction_ce": "CE Heavenly Restriction",
   "trait.jujutsu_kaisen.vessel": "Vessel",
   "trait.jujutsu_kaisen.perfect_body": "Perfect Body",
   "trait.jujutsu_kaisen.rct_output": "RCT Output",
@@ -564,7 +566,8 @@
 
   "chat.jujutsu_kaisen.trait.perfect_body": "You achieved a Perfect Body.",
   "chat.jujutsu_kaisen.trait.incarnated": "You were Incarnated as a Sorcerer.",
-  "chat.jujutsu_kaisen.trait.heavenly_restriction": "Your physically gifted body lacks any Cursed Energy.",
+  "chat.jujutsu_kaisen.trait.heavenly_restriction_physical": "Your physically gifted body lacks any Cursed Energy.",
+  "chat.jujutsu_kaisen.trait.heavenly_restriction_ce": "Your Cursed Energy is immense, but your body is weak",
   "chat.jujutsu_kaisen.trait.rct_output": "You hold a unique way to output your Cursed Energy.",
   "chat.jujutsu_kaisen.trait.vessel": "You were born with the potential to serve as a Vessel.",
   "chat.jujutsu_kaisen.trait.six_eyes": "You were born with the Six Eyes. The balance of the world has shifted.",
@@ -768,8 +771,11 @@
   "advancements.jujutsu_kaisen.black_flash.title": "Black Flash",
   "advancements.jujutsu_kaisen.black_flash.description": "The sparks of Black Flash do not choose whom to bless.",
 
-  "advancements.jujutsu_kaisen.heavenly_restriction.title": "Heavenly Restriction",
-  "advancements.jujutsu_kaisen.heavenly_restriction.description": "You were granted unrivaled physical abilities in exchange for your cursed energy.",
+  "advancements.jujutsu_kaisen.heavenly_restriction_physical.title": "Physical Heavenly Restriction",
+  "advancements.jujutsu_kaisen.heavenly_restriction_physical.description": "You were granted unrivaled physical abilities in exchange for your cursed energy.",
+
+  "advancements.jujutsu_kaisen.heavenly_restriction_ce.title": "CE Heavenly Restriction",
+  "advancements.jujutsu_kaisen.heavenly_restriction_ce.description": "Your cursed energy knows no boundaries in exchange for your vitality",
 
   "advancements.jujutsu_kaisen.vessel.title": "Vessel",
   "advancements.jujutsu_kaisen.vessel.description": "Your body seems to be built for containing other's souls.",

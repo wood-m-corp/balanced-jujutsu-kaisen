@@ -6,13 +6,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityTicker;
-import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -60,7 +57,7 @@ public class VeilBlock extends Block implements EntityBlock {
             Entity entity = ctx.getEntity();
 
             if (entity != null) {
-                if (entity instanceof LivingEntity living && (JJKAbilities.hasTrait(living, Trait.HEAVENLY_RESTRICTION) || JJKAbilities.hasToggled(living, JJKAbilities.BARRIER_TRAVEL.get()) ) && !pContext.isAbove(Shapes.block(), pPos, true)) {
+                if (entity instanceof LivingEntity living && (JJKAbilities.hasTrait(living, Trait.HEAVENLY_RESTRICTION_PHYSICAL) || JJKAbilities.hasToggled(living, JJKAbilities.BARRIER_TRAVEL.get()) ) && !pContext.isAbove(Shapes.block(), pPos, true)) {
                     return Shapes.empty();
                 }
                 if (entity instanceof Projectile projectile) entity = projectile.getOwner();

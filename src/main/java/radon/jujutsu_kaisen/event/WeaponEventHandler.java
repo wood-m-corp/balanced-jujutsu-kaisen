@@ -20,9 +20,6 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import radon.jujutsu_kaisen.JujutsuKaisen;
 import radon.jujutsu_kaisen.ability.JJKAbilities;
-import radon.jujutsu_kaisen.ability.base.Ability;
-import radon.jujutsu_kaisen.ability.base.Summon;
-import radon.jujutsu_kaisen.ability.base.DomainExpansion;
 import radon.jujutsu_kaisen.capability.data.sorcerer.CursedTechnique;
 import radon.jujutsu_kaisen.capability.data.sorcerer.ISorcererData;
 import radon.jujutsu_kaisen.capability.data.sorcerer.SorcererDataHandler;
@@ -91,7 +88,7 @@ public class WeaponEventHandler {
                     attacker.level().explode(attacker, attacker.damageSources().explosion(attacker, null), null, pos.x, pos.y, pos.z, 1.0F, false, Level.ExplosionInteraction.NONE);
                 }
 
-                if (stacks.contains(JJKItems.INVERTED_SPEAR_OF_HEAVEN.get()) && (!ConfigHolder.SERVER.hrRequiredForISOH.get()  || JJKAbilities.hasTrait(attacker, Trait.HEAVENLY_RESTRICTION) )  ) {
+                if (stacks.contains(JJKItems.INVERTED_SPEAR_OF_HEAVEN.get()) && (!ConfigHolder.SERVER.hrRequiredForISOH.get()  || JJKAbilities.hasTrait(attacker, Trait.HEAVENLY_RESTRICTION_PHYSICAL) )  ) {
                    
                     /* 
                     if (victim.getCapability(SorcererDataHandler.INSTANCE).isPresent()) {
@@ -196,7 +193,7 @@ public class WeaponEventHandler {
                    // source = JJKDamageSources.splitSoulKatanaAttack(victim);
                     //event.setAmount(event.getAmount()*0.9f);
                    // event.setAmount(event.getAmount()*0.196f); //all
-                    if (JJKAbilities.hasTrait(attacker, Trait.HEAVENLY_RESTRICTION) && !source.is(JJKDamageSources.SPLIT_SOUL_KATANA) ) {
+                    if (JJKAbilities.hasTrait(attacker, Trait.HEAVENLY_RESTRICTION_PHYSICAL) && !source.is(JJKDamageSources.SPLIT_SOUL_KATANA) ) {
                         if (victim.hurt(JJKDamageSources.splitSoulKatanaAttack(attacker),event.getAmount() * 1.0f )) {
                             //if (victim.hurt(JJKDamageSources.splitSoulKatanaAttack(attacker),event.getAmount() * 0.05f )) {
                                  event.setAmount(event.getAmount()*0.1f);
@@ -213,7 +210,7 @@ public class WeaponEventHandler {
                 //}
 
                 if (stacks.contains(JJKItems.PLAYFUL_CLOUD.get())) {
-                    if (JJKAbilities.hasTrait(attacker, Trait.HEAVENLY_RESTRICTION)) {
+                    if (JJKAbilities.hasTrait(attacker, Trait.HEAVENLY_RESTRICTION_PHYSICAL)) {
                         event.setAmount(event.getAmount()*1.2f);
                     } else {
                         event.setAmount(event.getAmount()*1.05f);

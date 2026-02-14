@@ -5,12 +5,9 @@ import radon.jujutsu_kaisen.capability.data.sorcerer.CursedTechnique;
 import radon.jujutsu_kaisen.capability.data.sorcerer.JujutsuType;
 import radon.jujutsu_kaisen.capability.data.sorcerer.Trait;
 
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class ServerConfig {
@@ -96,8 +93,11 @@ public class ServerConfig {
     public final ForgeConfigSpec.DoubleValue playerMaxSpeed;
     public final ForgeConfigSpec.DoubleValue HRMaxSpeed;
     public final ForgeConfigSpec.IntValue npcHPMin;
-    public final ForgeConfigSpec.DoubleValue hrHPMult;
-    public final ForgeConfigSpec.IntValue hrHPMin;
+    public final ForgeConfigSpec.DoubleValue phrHPMult;
+    public final ForgeConfigSpec.IntValue phrHPMin;
+    public final ForgeConfigSpec.IntValue cehrHP;
+    public final ForgeConfigSpec.DoubleValue cehrCEMult;
+    public final ForgeConfigSpec.IntValue cehrOutputMax;
     public final ForgeConfigSpec.DoubleValue playerM1Mult;
     public final ForgeConfigSpec.DoubleValue limitlessNoSixEyesMult;
     public final ForgeConfigSpec.DoubleValue sixEyesMult;
@@ -287,7 +287,7 @@ public class ServerConfig {
                 .define("MBAReroll", false);
         this.wcsCutAnything = builder.comment("Whether World Cutting Slash truly cuts the world (destroys indestructible blocks).")
                 .define("wcsCutAnything", true);
-        this.hrRequiredForISOH = builder.comment("Whether Heavenly Restriction is required to use the Inverted Spear of Heaven")
+        this.hrRequiredForISOH = builder.comment("Whether Physical Heavenly Restriction is required to use the Inverted Spear of Heaven")
                 .define("hrRequiredForISOH", false);
         this.playerRequiredForRCT = builder.comment("Whether Players must kill you in order for you to unlock RCT")
                 .define("playerRequiredForRCT", false);
@@ -311,7 +311,7 @@ public class ServerConfig {
                 .defineInRange("sorcererDefenseMult", 1.0F, 0.0F, 9999.0F);
         this.jujutsuDefenseMult = builder.comment("The multiplier to standard players' defense")
                 .defineInRange("jujutsuDefenseMult", 1.0F, 0.0F, 9999.0F);
-        this.hrDefenseMult = builder.comment("The multiplier to Heavenly Restriction players's defense (already higher outside of config)")
+        this.hrDefenseMult = builder.comment("The multiplier to Physical Heavenly Restriction players's defense (already higher outside of config)")
                 .defineInRange("hrDefenseMult", 1.0F, 0.0F, 9999.0F);
         this.playerDamageMult = builder.comment("The multiplier to all player attacks (includes summons of all kinds)")
                 .defineInRange("playerDamageMult", 1.0F, 0.0F, 9999.0F);
@@ -329,14 +329,20 @@ public class ServerConfig {
                 .defineInRange("playerCEArmorMax", 20.0F, 0.0F, 9999.0F);
         this.playerMaxSpeed = builder.comment("The maximum boost to player movement speed, scales to 0.32 at 20k exp by default (DOES NOT CAP PROJECTION OR SCALE SPEED HIGHER).")
                 .defineInRange("playerMaxSpeed", 0.32F, 0.0F, 9999.0F);
-        this.HRMaxSpeed = builder.comment("The maximum boost to Heavenly Restriction movement speed, scales to 0.8 at 20k by default (DOES NOT SCALE SPEED HIGHER)")
+        this.HRMaxSpeed = builder.comment("The maximum boost to Physical Heavenly Restriction movement speed, scales to 0.8 at 20k by default (DOES NOT SCALE SPEED HIGHER)")
                 .defineInRange("HRMaxSpeed", 0.8F, 0.0F, 9999.0F);
         this.playerHPMin = builder.comment("The minimum health of a player.")
                 .defineInRange("playerHPMin", 40, 1, 9999);
-        this.hrHPMult = builder.comment("The multiplier to a heavenly restriction player's HP (scales by bars, so will move by 20 hp increments)")
-                .defineInRange("hrHPMult", 15.0F, 0.0F, 9999.0F);
-        this.hrHPMin = builder.comment("The minimum health of a Heavenly Restriction player.")
-                .defineInRange("hrHPMin", 40, 1, 9999);
+        this.phrHPMult = builder.comment("The multiplier to a Physical Heavenly Restriction player's HP (scales by bars, so will move by 20 hp increments)")
+                .defineInRange("phrHPMult", 15.0F, 0.0F, 9999.0F);
+        this.phrHPMin = builder.comment("The minimum health of a Physical Heavenly Restriction player.")
+                .defineInRange("phrHPMin", 40, 1, 9999);
+        this.cehrHP = builder.comment("The health value of a CE Heavenly Restriction player.")
+                .defineInRange("cehrHPMin", 10, 1, 9999);
+        this.cehrCEMult = builder.comment("The CE regeneration multiplier applied to a CE Heavenly Restriction player.")
+                .defineInRange("cehrCEMult", 2.0F, 1.0F, 9999.0F);
+        this.cehrOutputMax = builder.comment("The maximum output of CE for a CE Heavenly Restriction player.")
+                .defineInRange("cehrOutputMax", 500, 100, 9999);
         this.npcHPMin = builder.comment("The minimum health of the mod's NPCs.")
                 .defineInRange("npcHPMin", 40, 1, 9999);
         this.playerM1Mult = builder.comment("The multiplier to player M1 Hit Damage")

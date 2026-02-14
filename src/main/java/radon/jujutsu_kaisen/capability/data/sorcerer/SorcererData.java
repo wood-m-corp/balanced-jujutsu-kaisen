@@ -2,7 +2,6 @@ package radon.jujutsu_kaisen.capability.data.sorcerer;
 
 import com.mojang.authlib.GameProfile;
 
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.nbt.*;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -14,21 +13,16 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.players.GameProfileCache;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageType;
-import net.minecraft.world.damagesource.DamageTypes;
-import net.minecraft.world.effect.MobEffectInstance;   
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.entity.EntityTypeTest;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.server.ServerLifecycleHooks;
 import radon.jujutsu_kaisen.JJKConstants;
 import radon.jujutsu_kaisen.JujutsuKaisen;
@@ -39,12 +33,8 @@ import radon.jujutsu_kaisen.ability.misc.Slam;
 import radon.jujutsu_kaisen.client.particle.ParticleColors;
 import radon.jujutsu_kaisen.client.visual.ClientVisualHandler;
 import radon.jujutsu_kaisen.config.ConfigHolder;
-import radon.jujutsu_kaisen.config.ServerConfig;
-import radon.jujutsu_kaisen.entity.base.ISorcerer;
 import radon.jujutsu_kaisen.network.PacketHandler;
 import radon.jujutsu_kaisen.item.JJKItems;
-import radon.jujutsu_kaisen.item.cursed_tool.HitenStaffItem;
-import radon.jujutsu_kaisen.network.packet.c2s.UncopyAbilityC2SPacket;
 import radon.jujutsu_kaisen.network.packet.c2s.UnstealAbilityC2SPacket;
 import radon.jujutsu_kaisen.network.packet.s2c.SyncSorcererDataS2CPacket;
 import radon.jujutsu_kaisen.network.packet.s2c.SyncVisualDataS2CPacket;
@@ -53,8 +43,6 @@ import radon.jujutsu_kaisen.util.EntityUtil;
 import radon.jujutsu_kaisen.util.HelperMethods;
 import radon.jujutsu_kaisen.util.PlayerUtil;
 import radon.jujutsu_kaisen.util.SorcererUtil;
-import virtuoel.pehkui.api.ScaleData;
-import virtuoel.pehkui.api.ScaleTypes;
 
 import javax.annotation.Nullable;
 import java.util.*;
@@ -153,6 +141,9 @@ public class SorcererData implements ISorcererData {
     private static final UUID ATTACK_DAMAGE_UUID = UUID.fromString("4979087e-da76-4f8a-93ef-6e5847bfa2ee");
     private static final UUID ATTACK_SPEED_UUID = UUID.fromString("a2aef906-ed31-49e8-a56c-decccbfa2c1f");
     private static final UUID MOVEMENT_SPEED_UUID = UUID.fromString("9fe023ca-f22b-4429-a5e5-c099387d5441");
+    private static final UUID STEP_HEIGHT_UUID = UUID.fromString("654c65b5-dc0f-4092-8423-59cbe3d19682");
+    private static final UUID ARMOR_UUID = UUID.fromString("486fd273-fdbc-4876-b0b8-af5a64bfb08a");
+    private static final UUID ARMOR_TOUGHNESS_UUID = UUID.fromString("0be71dde-8aeb-4c5d-955f-d37325c31a94");
     private static final UUID PROJECTION_SORCERY_MOVEMENT_SPEED_UUID = UUID.fromString("23ecaba3-fbe8-44c1-93c4-5291aa9ee777");
     private static final UUID PROJECTION_ATTACK_SPEED_UUID = UUID.fromString("18cd1e25-656d-4172-b9f7-2f1b3daf4b89");
     private static final UUID PROJECTION_STEP_HEIGHT_UUID = UUID.fromString("1dbcbef7-8193-406a-b64d-8766ea505fdb");
@@ -388,7 +379,8 @@ public class SorcererData implements ISorcererData {
 
     private void checkAdvancements(ServerPlayer player) {
         if (this.traits.contains(Trait.SIX_EYES)) PlayerUtil.giveAdvancement(player, "six_eyes");
-        if (this.traits.contains(Trait.HEAVENLY_RESTRICTION)) PlayerUtil.giveAdvancement(player, "heavenly_restriction");
+        if (this.traits.contains(Trait.HEAVENLY_RESTRICTION_PHYSICAL)) PlayerUtil.giveAdvancement(player, "heavenly_restriction_physical");
+        if (this.traits.contains(Trait.HEAVENLY_RESTRICTION_CE)) PlayerUtil.giveAdvancement(player, "heavenly_restriction_ce");
         if (this.traits.contains(Trait.VESSEL)) PlayerUtil.giveAdvancement(player, "vessel");
         if (this.unlocked.contains(JJKAbilities.RCT1.get()))
             PlayerUtil.giveAdvancement(player, "reverse_cursed_technique");
@@ -511,13 +503,15 @@ public class SorcererData implements ISorcererData {
             this.silenced--;
         }
 
-        this.energy = Math.min(this.energy + (ConfigHolder.SERVER.cursedEnergyRegenerationAmount.get().floatValue() * ((this.owner instanceof Player player && ConfigHolder.SERVER.foodCERegen.get()) ? (player.getFoodData().getFoodLevel() / 20.0F) : 1.0F)), this.getMaxEnergy());
+        this.energy = Math.min(this.energy + (ConfigHolder.SERVER.cursedEnergyRegenerationAmount.get().floatValue()
+                * (traits.contains(Trait.HEAVENLY_RESTRICTION_CE) ? ConfigHolder.SERVER.cehrCEMult.get().floatValue() : 1.0F)
+                * ((this.owner instanceof Player player && ConfigHolder.SERVER.foodCERegen.get()) ? (player.getFoodData().getFoodLevel() / 20.0F) : 1.0F)
+                ), this.getMaxEnergy());
 
-        if (this.traits.contains(Trait.HEAVENLY_RESTRICTION)) {
-            double health = (Math.ceil(((this.getRealPower() - 1.0F) * ConfigHolder.SERVER.npcHPMult.get().floatValue() ) / 20) * 20) + ConfigHolder.SERVER.npcHPMin.get();
-
+        double health = (Math.ceil(((this.getRealPower() - 1.0F) * ConfigHolder.SERVER.npcHPMult.get().floatValue() ) / 20) * 20) + ConfigHolder.SERVER.npcHPMin.get();
+        if (this.traits.contains(Trait.HEAVENLY_RESTRICTION_PHYSICAL)) {
             if (this.owner instanceof Player player) {
-                health = (Math.ceil(((this.getRealPower() - 1.0F) * ConfigHolder.SERVER.hrHPMult.get().floatValue() ) / 20) * 20) + ConfigHolder.SERVER.hrHPMin.get();
+                health = (Math.ceil(((this.getRealPower() - 1.0F) * ConfigHolder.SERVER.phrHPMult.get().floatValue() ) / 20) * 20) + ConfigHolder.SERVER.phrHPMin.get();
             }
             if (this.owner.getMaxHealth() < health && EntityUtil.applyModifier(this.owner, Attributes.MAX_HEALTH, MAX_HEALTH_UUID, "Max health", health, AttributeModifier.Operation.ADDITION)) {
                 this.owner.setHealth(this.owner.getMaxHealth());
@@ -591,9 +585,22 @@ public class SorcererData implements ISorcererData {
                 player.bob += (f - player.bob) * 0.4F;
             }
 
-        } else {
-            double health = (Math.ceil(((this.getRealPower() - 1.0F) * ConfigHolder.SERVER.npcHPMult.get().floatValue()) / 20) * 20) +  ConfigHolder.SERVER.npcHPMin.get();
-            
+        }
+        else if (this.traits.contains(Trait.HEAVENLY_RESTRICTION_CE)) {
+            if (this.owner.getHealth() > ConfigHolder.SERVER.cehrHP.get()){
+                this.owner.setHealth(ConfigHolder.SERVER.cehrHP.get());
+            }
+            double movement = 1 - this.getRealPower() * 0.05D;
+            movement *= 0.1;
+            EntityUtil.applyModifier(this.owner, Attributes.MAX_HEALTH, MAX_HEALTH_UUID, "Max health", -10, AttributeModifier.Operation.ADDITION);
+            EntityUtil.applyModifier(this.owner, Attributes.ATTACK_SPEED, ATTACK_SPEED_UUID, "Attack speed", 0.5F, AttributeModifier.Operation.MULTIPLY_TOTAL);
+            EntityUtil.applyModifier(this.owner, Attributes.ATTACK_DAMAGE, ATTACK_DAMAGE_UUID, "Attack damage", 0.5F, AttributeModifier.Operation.MULTIPLY_TOTAL);
+            EntityUtil.applyModifier(this.owner, Attributes.MOVEMENT_SPEED, MOVEMENT_SPEED_UUID, "Movement speed", -movement, AttributeModifier.Operation.ADDITION);
+            EntityUtil.applyModifier(this.owner, ForgeMod.STEP_HEIGHT_ADDITION.get(), STEP_HEIGHT_UUID, "Step height addition", -5.0F, AttributeModifier.Operation.ADDITION);
+            EntityUtil.applyModifier(this.owner, Attributes.ARMOR, ARMOR_UUID, "Armor", -20F, AttributeModifier.Operation.ADDITION);
+            EntityUtil.applyModifier(this.owner, Attributes.ARMOR_TOUGHNESS, ARMOR_TOUGHNESS_UUID, "Armor toughness", 0.4F, AttributeModifier.Operation.MULTIPLY_TOTAL);
+        }
+        else {
             double damage = this.getRealPower() * 1.0D;
             if (this.owner instanceof Player player) {
                 health = (Math.ceil(((this.getRealPower() - 1.0F) * ConfigHolder.SERVER.playerHPMult.get().floatValue()) / 20) * 20) +  ConfigHolder.SERVER.playerHPMin.get();
@@ -648,7 +655,10 @@ public class SorcererData implements ISorcererData {
     public float getMaximumOutput() {
         float output = 1.0F;
 
-        if (this.toggled.contains(JJKAbilities.MYTHICAL_BEAST_AMBER.get() )) {
+        if (this.traits.contains(Trait.HEAVENLY_RESTRICTION_CE )){
+            output = ConfigHolder.SERVER.cehrOutputMax.get().floatValue() / 100F;
+        }
+        else if (this.toggled.contains(JJKAbilities.MYTHICAL_BEAST_AMBER.get() )) {
             output = 1.5F;
         }
         else if (this.isInZone())  {
@@ -663,7 +673,7 @@ public class SorcererData implements ISorcererData {
             stacks.add(stack.getItem());
             stacks.addAll(CuriosUtil.findSlots(owner, owner.getMainArm() == HumanoidArm.RIGHT ? "right_hand" : "left_hand")
                     .stream().map(ItemStack::getItem).toList());
-            if (stacks.contains(JJKItems.HITEN_STAFF.get()) && !this.traits.contains(Trait.HEAVENLY_RESTRICTION)) {
+            if (stacks.contains(JJKItems.HITEN_STAFF.get()) && !this.traits.contains(Trait.HEAVENLY_RESTRICTION_PHYSICAL)) {
                 output = 1.1F;
             }
         }
@@ -1337,7 +1347,7 @@ public class SorcererData implements ISorcererData {
 
     @Override
     public float getEnergy() {
-        if (this.traits.contains(Trait.HEAVENLY_RESTRICTION)) {
+        if (this.traits.contains(Trait.HEAVENLY_RESTRICTION_PHYSICAL)) {
             return 0.0F;
         }
         return this.energy;
@@ -1350,7 +1360,7 @@ public class SorcererData implements ISorcererData {
     }
 
    @Override
-public float getMaxEnergy() {
+    public float getMaxEnergy() {
     long time = this.owner.level().getLevelData().getDayTime();
     boolean night = time >= 13000 && time < 24000;
 
@@ -1368,6 +1378,7 @@ public float getMaxEnergy() {
     
     float finalEnergy = Math.min(maxCapacity * timeMultiplier, (baseCapacity * timeMultiplier + this.extraEnergy) );
     finalEnergy += this.additionalEnergy;
+    finalEnergy = this.hasTrait(Trait.HEAVENLY_RESTRICTION_CE) ? Float.MAX_VALUE : finalEnergy;
 
     return finalEnergy;
 }
@@ -1725,7 +1736,8 @@ public float getMaxEnergy() {
     public void wipe(ServerPlayer owner) {
         this.setExperience(0.0F);
         PlayerUtil.removeAdvancement(owner, "six_eyes");
-        PlayerUtil.removeAdvancement(owner, "heavenly_restriction");
+        PlayerUtil.removeAdvancement(owner, "heavenly_restriction_physical");
+        PlayerUtil.removeAdvancement(owner, "heavenly_restriction_ce");
         PlayerUtil.removeAdvancement(owner, "vessel");
         PlayerUtil.removeAdvancement(owner, "perfect_body");
         this.resetCopy();
@@ -1997,10 +2009,13 @@ public float getMaxEnergy() {
                 traits.addAll(cap.getTraits());
             }
         }
-
-        if ( (isUniqueTraitAllowed(Trait.HEAVENLY_RESTRICTION)  || !traits.contains(Trait.HEAVENLY_RESTRICTION)) &&
+        if ((isUniqueTraitAllowed(Trait.HEAVENLY_RESTRICTION_CE)  || (!traits.contains(Trait.HEAVENLY_RESTRICTION_PHYSICAL) && !traits.contains(Trait.HEAVENLY_RESTRICTION_CE))) &&
+                HelperMethods.RANDOM.nextInt(ConfigHolder.SERVER.heavenlyRestrictionRarity.get()) == 0) {
+            this.addTrait(Trait.HEAVENLY_RESTRICTION_CE);
+        }
+        else if ((isUniqueTraitAllowed(Trait.HEAVENLY_RESTRICTION_PHYSICAL)  || (!traits.contains(Trait.HEAVENLY_RESTRICTION_PHYSICAL) && !traits.contains(Trait.HEAVENLY_RESTRICTION_CE))) &&
             HelperMethods.RANDOM.nextInt(ConfigHolder.SERVER.heavenlyRestrictionRarity.get()) == 0) {
-            this.addTrait(Trait.HEAVENLY_RESTRICTION);
+            this.addTrait(Trait.HEAVENLY_RESTRICTION_PHYSICAL);
         } else {
             this.type = HelperMethods.RANDOM.nextInt(ConfigHolder.SERVER.curseRarity.get()) == 0 ? JujutsuType.CURSE : JujutsuType.SORCERER;
            
@@ -2121,7 +2136,8 @@ public float getMaxEnergy() {
                 owner.sendSystemMessage(Component.translatable(String.format("chat.%s.sorcerer", JujutsuKaisen.MOD_ID)));
             }
         }
-        this.energy = this.getMaxEnergy();
+
+        this.energy = this.traits.contains(Trait.HEAVENLY_RESTRICTION_CE) ? 0.0F : this.getMaxEnergy();
         if (ConfigHolder.SERVER.livesconfig.get() > 0) {
             owner.sendSystemMessage(Component.translatable(String.format("chat.%s.lives", JujutsuKaisen.MOD_ID), this.lives ));
         }

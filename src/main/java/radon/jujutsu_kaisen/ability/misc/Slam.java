@@ -24,7 +24,6 @@ import radon.jujutsu_kaisen.capability.data.sorcerer.Trait;
 import radon.jujutsu_kaisen.client.ClientWrapper;
 import radon.jujutsu_kaisen.effect.JJKEffects;
 import radon.jujutsu_kaisen.entity.base.ISorcerer;
-import radon.jujutsu_kaisen.ability.JJKAbilities;
 import radon.jujutsu_kaisen.entity.ten_shadows.RabbitEscapeEntity;
 import radon.jujutsu_kaisen.item.cursed_tool.SteelGauntletItem;
 import radon.jujutsu_kaisen.item.cursed_tool.SlaughterDemonItem;
@@ -86,7 +85,7 @@ public class Slam extends Ability implements Ability.ICharged {
 
     @Override
     public float getCost(LivingEntity owner) {
-        return JJKAbilities.hasTrait(owner, Trait.HEAVENLY_RESTRICTION) ? 0.0F : 30.0F;
+        return JJKAbilities.hasTrait(owner, Trait.HEAVENLY_RESTRICTION_PHYSICAL) ? 0.0F : 30.0F;
     }
 
     public int getCooldown() {
@@ -122,9 +121,13 @@ public class Slam extends Ability implements Ability.ICharged {
         
         float radius = MAX_EXPLOSION;
         float dmgMult = 0.75F;
-        if (JJKAbilities.hasTrait(owner, Trait.HEAVENLY_RESTRICTION)) {
+        if (JJKAbilities.hasTrait(owner, Trait.HEAVENLY_RESTRICTION_PHYSICAL)) {
             dmgMult = 0.8F;
             radius = radius*1.35f+1.5f;
+        }
+        if (JJKAbilities.hasTrait(owner, Trait.HEAVENLY_RESTRICTION_CE)) {
+            dmgMult = 0.65F;
+            radius = radius*0.65f-1.5f;
         }
         if (owner instanceof RabbitEscapeEntity) {
             radius = 1f;
@@ -164,9 +167,13 @@ public class Slam extends Ability implements Ability.ICharged {
                 if (owner.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof SlaughterDemonItem) {
                     staggerDuration = 20;
                 }
-
-                entity.addEffect(new MobEffectInstance(JJKEffects.STUN.get(),stunDuration, 0, false, false, false));
-                entity.addEffect(new MobEffectInstance(JJKEffects.STAGGER.get(),staggerDuration, 0, false, false, false));
+                if (owner.getCapability(SorcererDataHandler.INSTANCE).isPresent()) {
+                    ISorcererData cap = owner.getCapability(SorcererDataHandler.INSTANCE).resolve().orElseThrow();
+                    if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION_CE)) {
+                        entity.addEffect(new MobEffectInstance(JJKEffects.STUN.get(), stunDuration, 0, false, false, false));
+                        entity.addEffect(new MobEffectInstance(JJKEffects.STAGGER.get(), staggerDuration, 0, false, false, false));
+                    }
+                }
             }
              ExplosionHandler.spawn(owner.level().dimension(), owner.position(), radius, 5, Ability.getPower(JJKAbilities.SLAM.get(), owner) * dmgMult, owner,
                     owner instanceof Player player ? owner.damageSources().playerAttack(player) : owner.damageSources().mobAttack(owner), false, true );
@@ -188,6 +195,12 @@ public class Slam extends Ability implements Ability.ICharged {
        
 
         double launchPower = 2.0D + (2.0D * (Math.min(20, this.getCharge(owner)) / 20));
+        if (owner.getCapability(SorcererDataHandler.INSTANCE).isPresent()) {
+            ISorcererData cap = owner.getCapability(SorcererDataHandler.INSTANCE).resolve().orElseThrow();
+            if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION_CE)){
+                launchPower /= 2D;
+            }
+        }
         float checkcharge = (float) Math.min(20, this.getCharge(owner)) / 20;
 
         ISorcererData cap = owner.getCapability(SorcererDataHandler.INSTANCE).resolve().orElseThrow();

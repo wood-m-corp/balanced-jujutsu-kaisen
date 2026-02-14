@@ -126,7 +126,7 @@ public class StatsTab extends JJKTab {
             component.append(Component.translatable(String.format("gui.%s.stats.cursed_technique", JujutsuKaisen.MOD_ID), Component.translatable(String.format("gui.%s.stats.cursed_technique.none", JujutsuKaisen.MOD_ID )) ));
             component.append("\n");
         }
-        if (!cap.hasTrait(Trait.HEAVENLY_RESTRICTION)) {
+        if (!cap.hasTrait(Trait.HEAVENLY_RESTRICTION_PHYSICAL)) {
             component.append(Component.translatable(String.format("gui.%s.stats.cursed_energy_nature", JujutsuKaisen.MOD_ID), cap.getNature().getName()));
             component.append("\n");
         }

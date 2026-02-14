@@ -1,6 +1,5 @@
 package radon.jujutsu_kaisen.item.cursed_object;
 
-import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -16,9 +15,7 @@ import radon.jujutsu_kaisen.capability.data.sorcerer.SorcererDataHandler;
 import radon.jujutsu_kaisen.capability.data.sorcerer.JujutsuType;
 import radon.jujutsu_kaisen.capability.data.sorcerer.SorcererGrade;
 import radon.jujutsu_kaisen.capability.data.sorcerer.Trait;
-import radon.jujutsu_kaisen.entity.sorcerer.SukunaEntity;
 import radon.jujutsu_kaisen.item.base.CursedObjectItem;
-import radon.jujutsu_kaisen.util.EntityUtil;
 
 public class SukunaFingerItem extends CursedObjectItem {
     public SukunaFingerItem(Properties pProperties) {
@@ -37,7 +34,7 @@ public class SukunaFingerItem extends CursedObjectItem {
         if (pPlayer.getCapability(SorcererDataHandler.INSTANCE).isPresent()) {
             ISorcererData cap = pPlayer.getCapability(SorcererDataHandler.INSTANCE).resolve().orElseThrow();
 
-            if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION)) {
+            if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION_PHYSICAL)) {
                 return InteractionResultHolder.fail(stack);
             }
 

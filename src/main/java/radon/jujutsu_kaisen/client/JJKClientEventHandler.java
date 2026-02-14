@@ -19,7 +19,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.GrassColor;
 import net.minecraft.world.phys.AABB;
@@ -33,18 +32,14 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import radon.jujutsu_kaisen.ability.base.Ability;
 import radon.jujutsu_kaisen.ability.base.ITransformation;
-import radon.jujutsu_kaisen.client.gui.MeleeMenuType;
-import radon.jujutsu_kaisen.client.gui.screen.*;
 import radon.jujutsu_kaisen.client.render.entity.idle_transfiguration.PolymorphicSoulIsomerRenderer;
 import radon.jujutsu_kaisen.client.render.entity.idle_transfiguration.TransfiguredSoulLargeRenderer;
 import radon.jujutsu_kaisen.client.render.entity.idle_transfiguration.TransfiguredSoulNormalRenderer;
 import radon.jujutsu_kaisen.client.render.entity.idle_transfiguration.TransfiguredSoulSmallRenderer;
-import radon.jujutsu_kaisen.config.ConfigHolder;
 import radon.jujutsu_kaisen.entity.NyoiStaffEntity;
 import radon.jujutsu_kaisen.mixin.client.IItemInHandRendererAccessor;
 import radon.jujutsu_kaisen.mixin.client.IPlayerModelAccessor;
 import radon.jujutsu_kaisen.network.packet.c2s.*;
-import radon.jujutsu_kaisen.util.CuriosUtil;
 import radon.jujutsu_kaisen.JujutsuKaisen;
 import radon.jujutsu_kaisen.ability.JJKAbilities;
 import radon.jujutsu_kaisen.block.JJKBlocks;
@@ -74,14 +69,11 @@ import radon.jujutsu_kaisen.client.visual.ClientVisualHandler;
 import radon.jujutsu_kaisen.effect.JJKEffects;
 import radon.jujutsu_kaisen.entity.JJKEntities;
 import radon.jujutsu_kaisen.entity.curse.KuchisakeOnnaEntity;
-import radon.jujutsu_kaisen.item.JJKItems;
 import radon.jujutsu_kaisen.network.PacketHandler;
 import radon.jujutsu_kaisen.tags.JJKItemTags;
 import radon.jujutsu_kaisen.util.RotationUtil;
 import software.bernie.geckolib.animatable.GeoItem;
 import software.bernie.geckolib.renderer.GeoArmorRenderer;
-
-import java.io.IOException;
 
 public class JJKClientEventHandler {
     @Mod.EventBusSubscriber(modid = JujutsuKaisen.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
@@ -250,10 +242,10 @@ public class JJKClientEventHandler {
 
             if (data == null) return;
          
-            if (data.traits.contains(Trait.HEAVENLY_RESTRICTION)) {
+            if (data.traits.contains(Trait.HEAVENLY_RESTRICTION_PHYSICAL)) {
                 if (!(Minecraft.getInstance().getCameraEntity() instanceof LivingEntity viewer)) return;
 
-                if (JJKAbilities.hasTrait(viewer, Trait.HEAVENLY_RESTRICTION)) return;
+                if (JJKAbilities.hasTrait(viewer, Trait.HEAVENLY_RESTRICTION_PHYSICAL)) return;
 
                 if (target != viewer) {
                     Vec3 look = RotationUtil.getTargetAdjustedLookAngle(viewer);

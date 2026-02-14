@@ -5,13 +5,10 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.RiderShieldingMount;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.level.Level;
 import radon.jujutsu_kaisen.ability.JJKAbilities;
 import radon.jujutsu_kaisen.capability.data.sorcerer.Trait;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -19,15 +16,12 @@ import radon.jujutsu_kaisen.effect.JJKEffects;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.ForgeMod;
 import org.jetbrains.annotations.Nullable;
 import radon.jujutsu_kaisen.ability.base.Ability;
 import radon.jujutsu_kaisen.ability.MenuType;
 import radon.jujutsu_kaisen.capability.data.sorcerer.ISorcererData;
-import radon.jujutsu_kaisen.capability.data.sorcerer.Pact;
 import radon.jujutsu_kaisen.capability.data.sorcerer.SorcererDataHandler;
 import radon.jujutsu_kaisen.entity.base.ISorcerer;
-import radon.jujutsu_kaisen.item.cursed_tool.HitenStaffItem;
 import radon.jujutsu_kaisen.item.cursed_tool.PolearmStaffItem;
 import radon.jujutsu_kaisen.item.cursed_tool.SteelGauntletItem;
 import radon.jujutsu_kaisen.item.cursed_tool.SlaughterDemonItem;
@@ -66,9 +60,12 @@ public class Barrage extends Ability {
         int gap = 2;
         ISorcererData cap = owner.getCapability(SorcererDataHandler.INSTANCE).resolve().orElseThrow();
         int duration2 = DURATION;
-        if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION)) {
+        if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION_PHYSICAL)) {
             duration2 = 10;
             //gap = 1;
+        }
+        if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION_CE)) {
+            duration2 = 4;
         }
 
         double newRange = RANGE;
@@ -141,9 +138,9 @@ public class Barrage extends Ability {
                     if (owner.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof SteelGauntletItem) {
                         entity.level().playSound(null, center.x, center.y, center.z, SoundEvents.ZOMBIE_ATTACK_IRON_DOOR, SoundSource.MASTER, 1.5F, 0.8F);
                     }
-
-                    entity.addEffect(new MobEffectInstance(JJKEffects.STAGGER.get(), finalStagger, 0, false, false, false));
-
+                    if (!cap.hasTrait(Trait.HEAVENLY_RESTRICTION_CE)) {
+                        entity.addEffect(new MobEffectInstance(JJKEffects.STAGGER.get(), finalStagger, 0, false, false, false));
+                    }
                     if (owner instanceof Player player) {
                         player.attack(entity);
                     } else {
@@ -167,7 +164,7 @@ public class Barrage extends Ability {
 
     @Override
     public float getCost(LivingEntity owner) {
-        return JJKAbilities.hasTrait(owner, Trait.HEAVENLY_RESTRICTION) ? 0.0F : 25.0F;
+        return JJKAbilities.hasTrait(owner, Trait.HEAVENLY_RESTRICTION_PHYSICAL) ? 0.0F : 25.0F;
     }
 
     public int getCooldown() {

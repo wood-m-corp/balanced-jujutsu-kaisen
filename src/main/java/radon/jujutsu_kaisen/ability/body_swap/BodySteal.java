@@ -1,31 +1,17 @@
 package radon.jujutsu_kaisen.ability.body_swap;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.SkinManager;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.event.entity.living.LivingDamageEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 
-import java.util.Set;
-
 import org.jetbrains.annotations.Nullable;
-
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.minecraft.MinecraftProfileTexture;
 
 import radon.jujutsu_kaisen.JujutsuKaisen;
 import radon.jujutsu_kaisen.ability.base.Ability;
@@ -33,18 +19,13 @@ import radon.jujutsu_kaisen.ability.JJKAbilities;
 import radon.jujutsu_kaisen.capability.data.sorcerer.ISorcererData;
 import radon.jujutsu_kaisen.capability.data.sorcerer.JujutsuType;
 import radon.jujutsu_kaisen.capability.data.sorcerer.SorcererDataHandler;
-import radon.jujutsu_kaisen.capability.data.sorcerer.AbsorbedCurse;
 import radon.jujutsu_kaisen.capability.data.sorcerer.CursedEnergyNature;
 import radon.jujutsu_kaisen.capability.data.sorcerer.CursedTechnique;
 import radon.jujutsu_kaisen.capability.data.sorcerer.Trait;
 import radon.jujutsu_kaisen.config.ConfigHolder;
-import radon.jujutsu_kaisen.item.CursedSpiritOrbItem;
-import radon.jujutsu_kaisen.item.JJKItems;
 import radon.jujutsu_kaisen.network.PacketHandler;
 import radon.jujutsu_kaisen.network.packet.s2c.SyncSorcererDataS2CPacket;
-import radon.jujutsu_kaisen.util.EntityUtil;
 import radon.jujutsu_kaisen.util.HelperMethods;
-import radon.jujutsu_kaisen.util.PlayerUtil;
 
 public class BodySteal extends Ability implements Ability.IToggled {
     @Override
@@ -160,7 +141,7 @@ public class BodySteal extends Ability implements Ability.IToggled {
                 }
             }
             for (Trait t : targetCap.getTraits()) {
-                if (t != Trait.RCT_OUTPUT && t != Trait.HEAVENLY_RESTRICTION) {
+                if (t != Trait.RCT_OUTPUT && t != Trait.HEAVENLY_RESTRICTION_PHYSICAL && t != Trait.HEAVENLY_RESTRICTION_CE) {
                     ownerCap.addTrait(t);
                 }
             }

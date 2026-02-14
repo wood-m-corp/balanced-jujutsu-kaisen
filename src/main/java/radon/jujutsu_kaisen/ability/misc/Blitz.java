@@ -4,12 +4,10 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -21,7 +19,6 @@ import radon.jujutsu_kaisen.capability.data.sorcerer.ISorcererData;
 import radon.jujutsu_kaisen.capability.data.sorcerer.SorcererDataHandler;
 import radon.jujutsu_kaisen.capability.data.sorcerer.Trait;
 import radon.jujutsu_kaisen.client.particle.MirageParticle;
-import radon.jujutsu_kaisen.damage.JJKDamageSources;
 import radon.jujutsu_kaisen.effect.JJKEffects;
 import radon.jujutsu_kaisen.entity.base.ISorcerer;
 import radon.jujutsu_kaisen.sound.JJKSounds;
@@ -153,7 +150,7 @@ public class Blitz extends Ability {
     @Override
     public boolean isValid(LivingEntity owner) {
         ISorcererData cap = owner.getCapability(SorcererDataHandler.INSTANCE).resolve().orElseThrow();
-        return (!(owner instanceof ISorcerer sorcerer) || sorcerer.hasMeleeAttack() && sorcerer.hasArms()) && cap.hasTrait(Trait.HEAVENLY_RESTRICTION) && super.isValid(owner);
+        return (!(owner instanceof ISorcerer sorcerer) || sorcerer.hasMeleeAttack() && sorcerer.hasArms()) && cap.hasTrait(Trait.HEAVENLY_RESTRICTION_PHYSICAL) && super.isValid(owner);
     }
 
     @Override
@@ -163,7 +160,7 @@ public class Blitz extends Ability {
 
     @Override
     public float getCost(LivingEntity owner) {
-        return JJKAbilities.hasTrait(owner, Trait.HEAVENLY_RESTRICTION) ? 0.0F : 15.0F;
+        return JJKAbilities.hasTrait(owner, Trait.HEAVENLY_RESTRICTION_PHYSICAL) ? 0.0F : 15.0F;
     }
 
     public int getCooldown() {

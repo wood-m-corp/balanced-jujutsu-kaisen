@@ -9,17 +9,11 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.PathfinderMob;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraft.world.phys.shapes.BooleanOp;
-import net.minecraft.world.phys.shapes.Shapes;
-import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 import radon.jujutsu_kaisen.ability.JJKAbilities;
 import radon.jujutsu_kaisen.ability.MenuType;
@@ -58,7 +52,7 @@ public class Dash extends Ability {
     public boolean shouldTrigger(PathfinderMob owner, @Nullable LivingEntity target) {
         if (target == null) return false;
         ISorcererData cap = owner.getCapability(SorcererDataHandler.INSTANCE).resolve().orElseThrow();
-        if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION)) {
+        if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION_PHYSICAL)) {
             return HelperMethods.RANDOM.nextInt(2) == 0;
         }
         return HelperMethods.RANDOM.nextInt(15) == 0;
@@ -131,7 +125,10 @@ public class Dash extends Ability {
     }
 
     private static float getRange(LivingEntity owner) {
-        return (float) (RANGE * (JJKAbilities.hasTrait(owner, Trait.HEAVENLY_RESTRICTION) ? 1.5F : 1.0F));
+        float modifier = 1.0F;
+        if (JJKAbilities.hasTrait(owner, Trait.HEAVENLY_RESTRICTION_PHYSICAL)) modifier = 1.5F;
+        if (JJKAbilities.hasTrait(owner, Trait.HEAVENLY_RESTRICTION_CE)) modifier = 0.5F;
+        return (float) (RANGE * modifier);
     }
 
    private Vec3 getTarget(LivingEntity owner) {
@@ -156,7 +153,7 @@ public class Dash extends Ability {
 
         owner.level().playSound(null, owner.getX(), owner.getY(), owner.getZ(), SoundEvents.BUNDLE_INSERT, SoundSource.MASTER, 2F, 1.25F);
 
-        if (cap.getSpeedStacks() > 0 || cap.hasTrait(Trait.HEAVENLY_RESTRICTION)) {
+        if (cap.getSpeedStacks() > 0 || cap.hasTrait(Trait.HEAVENLY_RESTRICTION_PHYSICAL)) {
             owner.level().playSound(null, owner.getX(), owner.getY(), owner.getZ(), JJKSounds.DASH.get(), SoundSource.MASTER, 0.2F, 1.5F);
             owner.addEffect(new MobEffectInstance(JJKEffects.INVISIBILITY.get(), 4, 0, false, false, false));
             level.sendParticles(new MirageParticle.MirageParticleOptions(owner.getId()), owner.getX(), owner.getY(), owner.getZ(),
@@ -189,7 +186,7 @@ public class Dash extends Ability {
         } else {
             velocity = velocity.multiply(new Vec3(1.2D,1.3,1.2D));
         }
-        if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION)) {
+        if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION_PHYSICAL)) {
             velocity = velocity.multiply(new Vec3(1.2D, 1.0D, 1.2D));
             if (!owner.isShiftKeyDown()) {
                 owner.addEffect(new MobEffectInstance(JJKEffects.INVISIBILITY.get(), 8, 0, false, false, false));
@@ -198,6 +195,9 @@ public class Dash extends Ability {
                 owner.addEffect(new MobEffectInstance(JJKEffects.INVISIBILITY.get(), 4, 0, false, false, false));
                 velocity = velocity.multiply(new Vec3(1.1D, 1, 1.1D));
             }
+        }
+        if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION_CE)) {
+            velocity = velocity.multiply(new Vec3(0.8D, 1.0D, 0.8D));
         }
         if (owner.onGround() && velocity.y < 0) {
             velocity.multiply(1,0,1);
@@ -283,11 +283,17 @@ public class Dash extends Ability {
     public int getRealCooldown(LivingEntity owner) {
         ISorcererData cap = owner.getCapability(SorcererDataHandler.INSTANCE).resolve().orElseThrow();
 
-        if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION)) {
+        if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION_PHYSICAL)) {
             if (!owner.isShiftKeyDown()) {
                 return 16;
             }
             return 8;
+        }
+        if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION_CE)) {
+            if (!owner.isShiftKeyDown()) {
+                return 50;
+            }
+            return 25;
         }
         if (!owner.isShiftKeyDown()) {
             return 25;

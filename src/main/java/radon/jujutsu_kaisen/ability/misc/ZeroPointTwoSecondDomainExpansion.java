@@ -1,8 +1,6 @@
 package radon.jujutsu_kaisen.ability.misc;
 
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.player.Player;
@@ -18,8 +16,6 @@ import radon.jujutsu_kaisen.capability.data.sorcerer.SorcererDataHandler;
 import radon.jujutsu_kaisen.capability.data.sorcerer.CursedTechnique;
 import radon.jujutsu_kaisen.config.ConfigHolder;
 import radon.jujutsu_kaisen.entity.base.DomainExpansionEntity;
-import radon.jujutsu_kaisen.network.PacketHandler;
-import radon.jujutsu_kaisen.network.packet.s2c.SyncSorcererDataS2CPacket;
 import radon.jujutsu_kaisen.sound.JJKSounds;
 import radon.jujutsu_kaisen.capability.data.sorcerer.Trait;
 
@@ -103,7 +99,7 @@ public class ZeroPointTwoSecondDomainExpansion extends Ability {
             domain.setInstant(true);
             cap.delayTickEvent(() -> {
                 for (LivingEntity entity : domain.getAffected()) {
-                    if (JJKAbilities.hasTrait(entity, Trait.HEAVENLY_RESTRICTION)) {
+                    if (JJKAbilities.hasTrait(entity, Trait.HEAVENLY_RESTRICTION_PHYSICAL)) {
                         ability.onHitBlock(domain, owner, entity.blockPosition());
                     } else {
                         ability.onHitEntity(domain, owner, entity, true);

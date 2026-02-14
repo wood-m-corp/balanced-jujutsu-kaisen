@@ -458,12 +458,12 @@ public class JJKAbilities {
         for (RegistryObject<Ability> entry : ABILITIES.getEntries()) {
             Ability ability = entry.get();
 
-            if (!ability.isTechnique() && (!cap.hasTrait(Trait.HEAVENLY_RESTRICTION) || ability.getCost(owner) == 0)) {
+            if (!ability.isTechnique() && (!cap.hasTrait(Trait.HEAVENLY_RESTRICTION_PHYSICAL) || ability.getCost(owner) == 0)) {
                 abilities.add(ability);
             }
         }
 
-        if (!cap.hasTrait(Trait.HEAVENLY_RESTRICTION)) {
+        if (!cap.hasTrait(Trait.HEAVENLY_RESTRICTION_PHYSICAL)) {
             for (CursedTechnique technique : cap.getTechniques()) {
                 abilities.addAll(Arrays.asList(technique.getAbilities()));
             }

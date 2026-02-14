@@ -56,7 +56,7 @@ public class CursedEnergyShield extends Ability implements Ability.IChannelened 
     @Override
     public float getCost(LivingEntity owner) {
         ISorcererData cap = owner.getCapability(SorcererDataHandler.INSTANCE).resolve().orElseThrow();
-        if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION)) {
+        if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION_PHYSICAL)) {
             return 0.0F;
         }
         return 2.0F ;

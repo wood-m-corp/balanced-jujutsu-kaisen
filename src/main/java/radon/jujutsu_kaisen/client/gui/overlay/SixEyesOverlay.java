@@ -33,10 +33,14 @@ public class SixEyesOverlay {
 
         if (data == null) return;
 
-        if (data.traits.contains(Trait.HEAVENLY_RESTRICTION)) return;
+        if (data.traits.contains(Trait.HEAVENLY_RESTRICTION_PHYSICAL)) return;
 
         List<Component> lines = new ArrayList<>();
 
+        if (data.traits.contains(Trait.HEAVENLY_RESTRICTION_CE)){
+            Component overflowingCEText = Component.translatable(String.format("gui.%s.six_eyes_overlay.heavenly_restriction_ce", JujutsuKaisen.MOD_ID));
+            lines.add(overflowingCEText);
+        }
         if (data.technique != null) {
             Component techniqueText = Component.translatable(String.format("gui.%s.six_eyes_overlay.cursed_technique", JujutsuKaisen.MOD_ID),
                     data.technique.getName());

@@ -15,7 +15,9 @@ import radon.jujutsu_kaisen.ability.base.Ability;
 import radon.jujutsu_kaisen.capability.data.sorcerer.ISorcererData;
 import radon.jujutsu_kaisen.capability.data.sorcerer.SorcererDataHandler;
 import radon.jujutsu_kaisen.capability.data.sorcerer.CursedTechnique;
+import radon.jujutsu_kaisen.capability.data.sorcerer.Trait;
 import radon.jujutsu_kaisen.client.particle.ParticleColors;
+import radon.jujutsu_kaisen.config.ConfigHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +65,7 @@ public class CursedEnergyOverlay {
 
             graphics.blit(TEXTURE, 20, aboveY, 0, 0, 93, 10, 93, 18);
 
-            float energyWidth = (cap.getEnergy() / cap.getMaxEnergy()) * 94.0F;
+            float energyWidth = cap.hasTrait(Trait.HEAVENLY_RESTRICTION_CE) ? 94.0F : (cap.getEnergy() / cap.getMaxEnergy()) * 94.0F;
             graphics.blit(TEXTURE, 20, aboveY + 1, 0, 10, (int) energyWidth, 8, 93, 18);
 
             RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
@@ -73,8 +75,13 @@ public class CursedEnergyOverlay {
         graphics.pose().scale(SCALE, SCALE, SCALE);
 
         if (cap.getEnergy() > 0.0F) {
-            graphics.drawString(gui.getFont(), String.format("%.1f / %.1f", cap.getEnergy(), cap.getMaxEnergy()),
-                    Math.round(23 * (1.0F / SCALE)), Math.round((aboveY + 3.0F) * (1.0F / SCALE)), 16777215);
+            if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION_CE)){
+                graphics.drawString(gui.getFont(), String.format(cap.getEnergy() > 1000000 ? "∞ / ∞" : "%.1f / ∞", cap.getEnergy()),
+                        Math.round(23 * (1.0F / SCALE)), Math.round((aboveY + 3.0F) * (1.0F / SCALE)), 16777215);
+            }else {
+                graphics.drawString(gui.getFont(), String.format("%.1f / %.1f", cap.getEnergy(), cap.getMaxEnergy()),
+                        Math.round(23 * (1.0F / SCALE)), Math.round((aboveY + 3.0F) * (1.0F / SCALE)), 16777215);
+            }
             aboveY += 4;
         }
 

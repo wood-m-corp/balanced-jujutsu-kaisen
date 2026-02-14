@@ -3,7 +3,6 @@ package radon.jujutsu_kaisen.ability.base;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -31,10 +30,6 @@ import radon.jujutsu_kaisen.util.RotationUtil;
 import net.minecraft.util.Mth;
 import radon.jujutsu_kaisen.capability.data.sorcerer.BindingVow;
 import radon.jujutsu_kaisen.capability.data.sorcerer.CursedEnergyNature;
-
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 
 import javax.annotation.Nullable;
 
@@ -211,10 +206,13 @@ public abstract class Ability {
     public int getRealCooldown(LivingEntity owner) {
         ISorcererData cap = owner.getCapability(SorcererDataHandler.INSTANCE).resolve().orElseThrow();
 
-        if (this.isMelee() && cap.hasTrait(Trait.HEAVENLY_RESTRICTION)) {
+        if (this.isMelee() && cap.hasTrait(Trait.HEAVENLY_RESTRICTION_PHYSICAL)) {
             return this.getCooldown() / 2;
         }
-	if (this.isMelee() && cap.getNature() == CursedEnergyNature.DIVERGENT) {
+        if (this.isMelee() && cap.hasTrait(Trait.HEAVENLY_RESTRICTION_CE)) {
+            return this.getCooldown() * 2;
+        }
+        if (this.isMelee() && cap.getNature() == CursedEnergyNature.DIVERGENT) {
             return this.getCooldown() * 3 / 4;
         }
         return this.getCooldown();

@@ -43,7 +43,7 @@ public class SwapSelf extends Ability {
 
     public static boolean canSwap(Entity target) {
         return (target.isPickable() || target instanceof ItemEntity item && item.getItem().getItem() instanceof CursedToolItem || target instanceof CursedEnergyImbuedItemProjectile
-                || target instanceof JujutsuProjectile) && (!(target instanceof LivingEntity living) || !JJKAbilities.hasTrait(living, Trait.HEAVENLY_RESTRICTION));
+                || target instanceof JujutsuProjectile) && (!(target instanceof LivingEntity living) || !JJKAbilities.hasTrait(living, Trait.HEAVENLY_RESTRICTION_PHYSICAL));
     }
 
     

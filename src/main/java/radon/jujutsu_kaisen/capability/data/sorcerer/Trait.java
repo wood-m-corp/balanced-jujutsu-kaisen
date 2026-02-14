@@ -1,14 +1,12 @@
 package radon.jujutsu_kaisen.capability.data.sorcerer;
 
 import net.minecraft.network.chat.Component;
-import org.jetbrains.annotations.Nullable;
 import radon.jujutsu_kaisen.JujutsuKaisen;
-import radon.jujutsu_kaisen.ability.JJKAbilities;
-import radon.jujutsu_kaisen.ability.base.Ability;
 
 public enum Trait {
     SIX_EYES,
-    HEAVENLY_RESTRICTION,
+    HEAVENLY_RESTRICTION_PHYSICAL,
+    HEAVENLY_RESTRICTION_CE,
     VESSEL,
     RCT_OUTPUT,
     INCARNATED,

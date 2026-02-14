@@ -95,7 +95,7 @@ public class TestDash extends Ability {
     }
 
     private static float getRange(LivingEntity owner) {
-        return (float) (RANGE * (JJKAbilities.hasTrait(owner, Trait.HEAVENLY_RESTRICTION) ? 1.5F : 1.0F));
+        return (float) (RANGE * (JJKAbilities.hasTrait(owner, Trait.HEAVENLY_RESTRICTION_PHYSICAL) ? 1.5F : 1.0F));
     }
 
    private Vec3 getTarget(LivingEntity owner) {
@@ -144,7 +144,7 @@ public class TestDash extends Ability {
 
         ISorcererData cap = owner.getCapability(SorcererDataHandler.INSTANCE).resolve().orElseThrow();
 
-        if (cap.getSpeedStacks() > 0 || cap.hasTrait(Trait.HEAVENLY_RESTRICTION)) {
+        if (cap.getSpeedStacks() > 0 || cap.hasTrait(Trait.HEAVENLY_RESTRICTION_PHYSICAL)) {
             owner.level().playSound(null, owner.getX(), owner.getY(), owner.getZ(), JJKSounds.DASH.get(), SoundSource.MASTER, 1.0F, 1.0F);
             owner.addEffect(new MobEffectInstance(JJKEffects.INVISIBILITY.get(), 5, 0, false, false, false));
             level.sendParticles(new MirageParticle.MirageParticleOptions(owner.getId()), owner.getX(), owner.getY(), owner.getZ(),
@@ -161,7 +161,7 @@ public class TestDash extends Ability {
         Vec3 look = target;
 
         velocity = velocity.multiply(new Vec3(0.7D, 1.0D, 0.7D));
-        if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION)) {
+        if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION_PHYSICAL)) {
             velocity = velocity.multiply(new Vec3(1.2D, 1D, 1.2)).add(new Vec3(0.0D, 0.05D,0.0D));
         }
         velocity = velocity.add(new Vec3(0.0D,0.2D,0.0D));
@@ -208,7 +208,7 @@ public class TestDash extends Ability {
     public int getRealCooldown(LivingEntity owner) {
         ISorcererData cap = owner.getCapability(SorcererDataHandler.INSTANCE).resolve().orElseThrow();
 
-        if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION)) {
+        if (cap.hasTrait(Trait.HEAVENLY_RESTRICTION_PHYSICAL)) {
             return 4;
         }
         return super.getRealCooldown(owner);

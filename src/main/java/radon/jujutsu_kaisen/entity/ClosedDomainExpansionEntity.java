@@ -11,7 +11,6 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
@@ -27,7 +26,6 @@ import radon.jujutsu_kaisen.VeilHandler;
 import radon.jujutsu_kaisen.ability.JJKAbilities;
 import radon.jujutsu_kaisen.ability.base.DomainExpansion;
 import radon.jujutsu_kaisen.block.JJKBlocks;
-import radon.jujutsu_kaisen.block.domain.DomainBlock;
 import radon.jujutsu_kaisen.block.entity.DomainBlockEntity;
 import radon.jujutsu_kaisen.block.entity.VeilBlockEntity;
 import radon.jujutsu_kaisen.block.entity.VeilRodBlockEntity;
@@ -412,7 +410,7 @@ public class ClosedDomainExpansionEntity extends DomainExpansionEntity {
 
     private void doSureHitEffect(@NotNull LivingEntity owner) {
         for (LivingEntity entity : this.getAffected()) {
-            if (JJKAbilities.hasTrait(entity, Trait.HEAVENLY_RESTRICTION)) {
+            if (JJKAbilities.hasTrait(entity, Trait.HEAVENLY_RESTRICTION_PHYSICAL)) {
                 this.ability.onHitBlock(this, owner, entity.blockPosition());
             } else {
                 this.ability.onHitEntity(this, owner, entity, false);

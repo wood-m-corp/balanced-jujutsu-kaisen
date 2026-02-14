@@ -41,7 +41,11 @@ public class SorcererDataHandler {
         newCap.deserializeNBT(oldCap.serializeNBT());
 
         if (event.isWasDeath()) {
-            newCap.setEnergy(newCap.getMaxEnergy());
+            if (oldCap.hasTrait(Trait.HEAVENLY_RESTRICTION_CE)){
+                newCap.setEnergy(oldCap.getEnergy());
+            }else{
+                newCap.setEnergy(newCap.getMaxEnergy());
+            }
             newCap.resetCooldowns();
             newCap.resetBurnout();
             newCap.resetDisable();

@@ -2,13 +2,13 @@
   "parent": "jujutsu_kaisen:jujutsu_kaisen/root",
   "display": {
     "icon": {
-      "item": "minecraft:chain"
+      "item": "minecraft:dead_bush"
     },
     "title": {
-      "translate": "advancements.jujutsu_kaisen.heavenly_restriction.title"
+      "translate": "advancements.jujutsu_kaisen.heavenly_restriction_ce.title"
     },
     "description": {
-      "translate": "advancements.jujutsu_kaisen.heavenly_restriction.description"
+      "translate": "advancements.jujutsu_kaisen.heavenly_restriction_ce.description"
     },
     "frame": "challenge",
     "hidden": false,
